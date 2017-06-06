@@ -52,10 +52,10 @@ update msg model =
             ( { model | password = newPassword }, Cmd.none )
 
         Submit ->
-            ( { model | location = model.location }, Navigation.newUrl "#mood" )
+            ( model, Navigation.newUrl "#/mood" )
 
         UrlChange location ->
-            ( model, Cmd.none )
+            ( { model | location = location }, Cmd.none )
 
 
 
@@ -107,7 +107,7 @@ chooseView model =
         "" ->
             loginForm model
 
-        "#mood" ->
+        "#/mood" ->
             recordMood model
 
         _ ->
