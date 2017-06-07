@@ -4,6 +4,8 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Navigation
+import Svg exposing (..)
+import Svg.Attributes exposing (..)
 
 
 main =
@@ -45,7 +47,8 @@ init location =
 type Msg
     = Username String
     | Password String
-    | Submit
+    | LoginSubmit
+    | EmotionSubmit
     | UrlChange Navigation.Location
     | Mood String
     | Energy String
@@ -60,8 +63,11 @@ update msg model =
         Password newPassword ->
             ( { model | password = newPassword }, Cmd.none )
 
-        Submit ->
+        LoginSubmit ->
             ( model, Navigation.newUrl "#/mood" )
+
+        EmotionSubmit ->
+            ( model, Navigation.newUrl "#/graph" )
 
         Mood newMood ->
             ( { model | current = setMood newMood model.current }, Cmd.none )
@@ -91,39 +97,7 @@ view : Model -> Html Msg
 view model =
     div []
         [ chooseView model
-        , div [] [ text model.location.pathname ]
-        ]
-
-
-loginForm : Model -> Html Msg
-loginForm model =
-    Html.form [ onSubmit Submit ]
-        [ label [ for "username" ]
-            [ text "Username" ]
-        , input [ id "username", placeholder "Username", type_ "text", value model.username, onInput Username ]
-            []
-        , label [ for "password" ]
-            [ text "Password" ]
-        , input [ placeholder "password", type_ "password", value model.password, onInput Password ]
-            []
-        , button [ type_ "submit" ]
-            [ text "Log in" ]
-        ]
-
-
-recordMood : Model -> Html Msg
-recordMood model =
-    Html.form []
-        [ label [ for "mood" ]
-            [ text "Mood" ]
-        , input [ id "mood", onInput Mood, Html.Attributes.max "10", Html.Attributes.min "0", value model.current.mood, type_ "range" ]
-            []
-        , label [ for "energy" ]
-            [ text "Energy" ]
-        , input [ id "energy", onInput Energy, Html.Attributes.max "10", Html.Attributes.min "0", value model.current.energy, type_ "range" ]
-            []
-        , button [ type_ "submit" ]
-            [ text "Submit" ]
+        , div [] [ Html.text model.location.pathname ]
         ]
 
 
@@ -135,5 +109,48 @@ chooseView model =
         "#/mood" ->
             recordMood model
 
+        "#/graph" ->
+            graphView model
+
         _ ->
-            div [] [ text "you're not supposed to be here" ]
+            div [] [ Html.text "you're not supposed to be here" ]
+
+
+loginForm : Model -> Html Msg
+loginForm model =
+    Html.form [ onSubmit LoginSubmit ]
+        [ label [ for "username" ]
+            [ Html.text "Username" ]
+        , input [ Html.Attributes.id "username", placeholder "Username", Html.Attributes.type_ "text", value model.username, onInput Username ]
+            []
+        , label [ for "password" ]
+            [ Html.text "Password" ]
+        , input [ placeholder "password", Html.Attributes.type_ "password", value model.password, onInput Password ]
+            []
+        , button [ Html.Attributes.type_ "submit" ]
+            [ Html.text "Log in" ]
+        ]
+
+
+recordMood : Model -> Html Msg
+recordMood model =
+    Html.form [ onSubmit EmotionSubmit ]
+        [ label [ for "mood" ]
+            [ Html.text "Mood" ]
+        , input [ Html.Attributes.id "mood", onInput Mood, Html.Attributes.max "10", Html.Attributes.min "0", value model.current.mood, Html.Attributes.type_ "range" ]
+            []
+        , label [ for "energy" ]
+            [ Html.text "Energy" ]
+        , input [ Html.Attributes.id "energy", onInput Energy, Html.Attributes.max "10", Html.Attributes.min "0", value model.current.energy, Html.Attributes.type_ "range" ]
+            []
+        , button [ Html.Attributes.type_ "submit" ]
+            [ Html.text "Submit" ]
+        ]
+
+
+graphView : Model -> Html Msg
+graphView model =
+    Html.div []
+        [ svg [ Svg.Attributes.width "200", Svg.Attributes.height "200", viewBox "0 0 100 100" ]
+            [ circle [ cx "50", cy "50", r "50" ] [] ]
+        ]
