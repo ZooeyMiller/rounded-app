@@ -8,7 +8,7 @@ import Navigation
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 
-
+main : Program Never Model Msg
 main =
     Navigation.program UrlChange
         { init = init
@@ -101,7 +101,7 @@ view model =
         [ chooseView model
         ]
 
-
+chooseView : Model -> Html Msg
 chooseView model =
     case model.location.hash of
         "" ->
@@ -153,32 +153,64 @@ graphView : Model -> Html Msg
 graphView model =
     Html.div []
         [ svg [ Svg.Attributes.height "200", viewBox ("0 0 " ++ (toString <| Array.length model.emotionHistory) ++ " 11"), Svg.Attributes.style "border-bottom: 3px solid black; stroke: black; stroke-width: 0.1; border-left: 3px solid black; margin-left: 5rem; margin-top: 5rem; " ]
-            ( (Array.toList (Array.indexedMap (\i emotion -> graphPoint i emotion.mood model.emotionHistory "mood") model.emotionHistory)) ++
-             (Array.toList (Array.indexedMap (\i emotion -> graphPoint i emotion.energy model.emotionHistory "energy") model.emotionHistory)) )
+            (Array.toList (Array.indexedMap (\i emotion -> graphPoint i emotion.mood model.emotionHistory "mood") model.emotionHistory)
+                ++ Array.toList (Array.indexedMap (\i emotion -> graphPoint i emotion.energy model.emotionHistory "energy") model.emotionHistory)
+            )
         ]
 
 
--- graphPoint : Int -> String -> Array EmotionDatum -> String -> Svg Msg
+
+
+
+graphPoint : Int -> String -> Array EmotionDatum -> String -> Svg Msg
 graphPoint index y array toPlot =
-    let dataType =
-      if toPlot == "mood" then
-        .mood
-      else .energy
+    let
+        dataType =
+            if toPlot == "mood" then
+                .mood
+            else
+                .energy
+
+        dataColour =
+            if toPlot == "mood" then
+                "orange"
+            else
+                "purple"
     in
-      if index == 0 then
-        circle [ cx (toString index), cy (stringNumMinusNum y 11), r "0.2" ] []
-      else
+    if index == 0 then
+        circle
+            [ cx (toString index)
+            , cy (stringNumMinusNum y 11)
+            , r "0.2"
+            , Svg.Attributes.style ("fill: " ++ dataColour ++ "; stroke: " ++ dataColour ++ ";")
+            ]
+            []
+    else
         g []
-            [ circle [ cx (toString index), cy (stringNumMinusNum y 11), r "0.2" ] []
-            , Svg.path [ d ("M" ++ toString (index - 1) ++ " " ++
-                stringNumMinusNum (dataType <| getPoint <| Array.get (index - 1) array) 11 ++
-                " L" ++
-                (toString <| index) ++
-                " " ++
-                stringNumMinusNum y 11)
-              ] []
+            [ circle
+                [ cx (toString index)
+                , cy (stringNumMinusNum y 11)
+                , r "0.2"
+                , Svg.Attributes.style ("fill: " ++ dataColour ++ "; stroke: " ++ dataColour ++ ";")
+                ]
+                []
+            , Svg.path
+                [ d
+                    ("M"
+                        ++ toString (index - 1)
+                        ++ " "
+                        ++ stringNumMinusNum (dataType <| getPoint <| Array.get (index - 1) array) 11
+                        ++ " L"
+                        ++ (toString <| index)
+                        ++ " "
+                        ++ stringNumMinusNum y 11
+                    )
+                , Svg.Attributes.style ("stroke: " ++ dataColour)
+                ]
+                []
             ]
 
+getPoint : Maybe EmotionDatum -> EmotionDatum
 getPoint point =
     case point of
         Nothing ->
