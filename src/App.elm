@@ -66,10 +66,10 @@ update msg model =
             ( { model | password = newPassword }, Cmd.none )
 
         LoginSubmit ->
-            ( model, Navigation.newUrl "#/mood" )
+            ( model, Navigation.newUrl "/mood" )
 
         EmotionSubmit ->
-            ( model, Navigation.newUrl "#/graph" )
+            ( model, Navigation.newUrl "/graph" )
 
         Mood newMood ->
             ( { model | current = setMood newMood model.current }, Cmd.none )
@@ -103,14 +103,14 @@ view model =
 
 chooseView : Model -> Html Msg
 chooseView model =
-    case model.location.hash of
-        "" ->
+    case model.location.pathname of
+        "/" ->
             loginForm model
 
-        "#/mood" ->
+        "/mood" ->
             recordMood model
 
-        "#/graph" ->
+        "/graph" ->
             graphView model
 
         _ ->
