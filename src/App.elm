@@ -119,16 +119,16 @@ chooseView model =
 
 loginForm : Model -> Html Msg
 loginForm model =
-    Html.form [ onSubmit LoginSubmit ]
-        [ label [ for "username" ]
+    Html.form [ onSubmit LoginSubmit, Html.Attributes.class "flex flex-column items-center justify-center flex-auto ba br2 br4--top-right br4--bottom-left br--bottom-right b--blue bg-black-05 pa4 br2-m" ]
+        [ label [ for "username", Html.Attributes.class "vh" ]
             [ Html.text "Username" ]
-        , input [ Html.Attributes.id "username", placeholder "Username", Html.Attributes.type_ "text", value model.username, onInput Username ]
+        , input [ Html.Attributes.id "username", placeholder "Username", Html.Attributes.type_ "text", value model.username, onInput Username, Html.Attributes.class "db w-100 center pa2 bn" ]
             []
-        , label [ for "password" ]
+        , label [ for "password", Html.Attributes.class "vh" ]
             [ Html.text "Password" ]
-        , input [ placeholder "password", Html.Attributes.type_ "password", value model.password, onInput Password ]
+        , input [ placeholder "password", Html.Attributes.type_ "password", value model.password, onInput Password, Html.Attributes.class "db w-100 center pa2 bn mt3" ]
             []
-        , button [ Html.Attributes.type_ "submit" ]
+        , button [ Html.Attributes.type_ "submit", Html.Attributes.class "grow bn ph3 pv2 white bg-blue db w-100 center mt3" ]
             [ Html.text "Log in" ]
         ]
 
@@ -160,18 +160,24 @@ graphView model =
 graphPoint : Int -> String -> Array EmotionDatum -> Svg Msg
 graphPoint index y array =
     if index == 0 then
-      circle [ cx (toString index), cy (stringNumMinusNum y 11), r "0.2" ] []
+        circle [ cx (toString index), cy (stringNumMinusNum y 11), r "0.2" ] []
     else
-      g []
-          [ circle [ cx (toString index), cy (stringNumMinusNum y 11), r "0.2" ] []
-          , Svg.path [ d ("M" ++ toString (index - 1) ++ " " ++
-              stringNumMinusNum (.mood <| getPoint <| Array.get (index - 1) array) 11 ++
-              " L" ++
-              (toString <| index) ++
-              " " ++
-              stringNumMinusNum y 11)
-            ] []
-          ]
+        g []
+            [ circle [ cx (toString index), cy (stringNumMinusNum y 11), r "0.2" ] []
+            , Svg.path
+                [ d
+                    ("M"
+                        ++ toString (index - 1)
+                        ++ " "
+                        ++ stringNumMinusNum (.mood <| getPoint <| Array.get (index - 1) array) 11
+                        ++ " L"
+                        ++ (toString <| index)
+                        ++ " "
+                        ++ stringNumMinusNum y 11
+                    )
+                ]
+                []
+            ]
 
 
 getPoint point =
