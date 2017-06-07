@@ -160,22 +160,30 @@ graphView model =
 
 -- graphPoint : Int -> String -> Array EmotionDatum -> String -> Svg Msg
 graphPoint index y array toPlot =
-    let dataType =
-      if toPlot == "mood" then
-        .mood
-      else .energy
+    let
+      dataType =
+        if toPlot == "mood" then
+          .mood
+        else .energy
+      dataColour =
+        if toPlot == "mood" then
+          "orange"
+        else "purple"
     in
       if index == 0 then
-        circle [ cx (toString index), cy (stringNumMinusNum y 11), r "0.2" ] []
+        circle [ cx (toString index), cy (stringNumMinusNum y 11), r "0.2"
+               , Svg.Attributes.style ("fill: " ++ dataColour ++ "; stroke: " ++ dataColour ++ ";")] []
       else
         g []
-            [ circle [ cx (toString index), cy (stringNumMinusNum y 11), r "0.2" ] []
+            [ circle [ cx (toString index), cy (stringNumMinusNum y 11), r "0.2"
+                     , Svg.Attributes.style ("fill: " ++ dataColour ++ "; stroke: " ++ dataColour ++ ";")] []
             , Svg.path [ d ("M" ++ toString (index - 1) ++ " " ++
                 stringNumMinusNum (dataType <| getPoint <| Array.get (index - 1) array) 11 ++
                 " L" ++
                 (toString <| index) ++
                 " " ++
-                stringNumMinusNum y 11)
+                stringNumMinusNum y 11),
+                Svg.Attributes.style ("stroke: " ++ dataColour)
               ] []
             ]
 
