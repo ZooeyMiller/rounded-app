@@ -23,12 +23,19 @@ type alias Model =
     { username : String
     , password : String
     , location : Navigation.Location
+    , current : CurrentMood
+    }
+
+
+type alias CurrentMood =
+    { mood : String
+    , energy : String
     }
 
 
 init : Navigation.Location -> ( Model, Cmd Msg )
 init location =
-    ( Model "" "" location, Cmd.none )
+    ( Model "" "" location (CurrentMood "5" "5"), Cmd.none )
 
 
 
@@ -40,6 +47,8 @@ type Msg
     | Password String
     | Submit
     | UrlChange Navigation.Location
+    | Mood String
+    | Energy String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -54,8 +63,24 @@ update msg model =
         Submit ->
             ( model, Navigation.newUrl "#/mood" )
 
+        Mood newMood ->
+            ( { model | current = setMood newMood model.current }, Cmd.none )
+
+        Energy newMood ->
+            ( { model | current = setEnergy newMood model.current }, Cmd.none )
+
         UrlChange location ->
             ( { model | location = location }, Cmd.none )
+
+
+setEnergy : String -> CurrentMood -> CurrentMood
+setEnergy newEnergy mood =
+    { mood | energy = newEnergy }
+
+
+setMood : String -> CurrentMood -> CurrentMood
+setMood newMood mood =
+    { mood | mood = newMood }
 
 
 
@@ -91,11 +116,11 @@ recordMood model =
     Html.form []
         [ label [ for "mood" ]
             [ text "Mood" ]
-        , input [ id "mood", Html.Attributes.max "10", Html.Attributes.min "0", type_ "range" ]
+        , input [ id "mood", onInput Mood, Html.Attributes.max "10", Html.Attributes.min "0", value model.current.mood, type_ "range" ]
             []
         , label [ for "energy" ]
             [ text "Energy" ]
-        , input [ id "energy", Html.Attributes.max "10", Html.Attributes.min "0", type_ "range" ]
+        , input [ id "energy", onInput Energy, Html.Attributes.max "10", Html.Attributes.min "0", value model.current.energy, type_ "range" ]
             []
         , button [ type_ "submit" ]
             [ text "Submit" ]
