@@ -1,5 +1,6 @@
 module Main exposing (..)
 
+import Array exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -25,11 +26,12 @@ type alias Model =
     { username : String
     , password : String
     , location : Navigation.Location
-    , current : CurrentMood
+    , current : EmotionDatum
+    , emotionHistory : Array EmotionDatum
     }
 
 
-type alias CurrentMood =
+type alias EmotionDatum =
     { mood : String
     , energy : String
     }
@@ -37,7 +39,7 @@ type alias CurrentMood =
 
 init : Navigation.Location -> ( Model, Cmd Msg )
 init location =
-    ( Model "" "" location (CurrentMood "5" "5"), Cmd.none )
+    ( Model "" "" location (EmotionDatum "5" "5") (Array.fromList [ EmotionDatum "1" "2", EmotionDatum "8" "2", EmotionDatum "10" "10", EmotionDatum "7" "5", EmotionDatum "8" "2" ]), Cmd.none )
 
 
 
@@ -75,16 +77,16 @@ update msg model =
         Energy newMood ->
             ( { model | current = setEnergy newMood model.current }, Cmd.none )
 
-        UrlChange location ->
-            ( { model | location = location }, Cmd.none )
+        UrlChange newLocation ->
+            ( { model | location = newLocation }, Cmd.none )
 
 
-setEnergy : String -> CurrentMood -> CurrentMood
+setEnergy : String -> EmotionDatum -> EmotionDatum
 setEnergy newEnergy mood =
     { mood | energy = newEnergy }
 
 
-setMood : String -> CurrentMood -> CurrentMood
+setMood : String -> EmotionDatum -> EmotionDatum
 setMood newMood mood =
     { mood | mood = newMood }
 
@@ -97,7 +99,6 @@ view : Model -> Html Msg
 view model =
     div []
         [ chooseView model
-        , div [] [ Html.text model.location.pathname ]
         ]
 
 
@@ -151,6 +152,37 @@ recordMood model =
 graphView : Model -> Html Msg
 graphView model =
     Html.div []
-        [ svg [ Svg.Attributes.width "200", Svg.Attributes.height "200", viewBox "0 0 100 100" ]
-            [ circle [ cx "50", cy "50", r "50" ] [] ]
+        [ svg [ Svg.Attributes.height "200", viewBox ("0 0 " ++ (toString <| Array.length model.emotionHistory) ++ " 11"), Svg.Attributes.style "border-bottom: 3px solid black; stroke: black; stroke-width: 0.1; border-left: 3px solid black; margin-left: 5rem; margin-top: 5rem; " ]
+            (Array.toList (Array.indexedMap (\i emotion -> graphPoint i emotion.mood model.emotionHistory) model.emotionHistory))
         ]
+
+
+graphPoint : Int -> String -> Array EmotionDatum -> Svg Msg
+graphPoint index y array =
+    if index == 0 then
+      circle [ cx (toString index), cy (stringNumMinusNum y 11), r "0.2" ] []
+    else
+      g []
+          [ circle [ cx (toString index), cy (stringNumMinusNum y 11), r "0.2" ] []
+          , Svg.path [ d ("M" ++ toString (index - 1) ++ " " ++
+              stringNumMinusNum (.mood <| getPoint <| Array.get (index - 1) array) 11 ++
+              " L" ++
+              (toString <| index) ++
+              " " ++
+              stringNumMinusNum y 11)
+            ] []
+          ]
+
+
+getPoint point =
+    case point of
+        Nothing ->
+            { mood = "0", energy = "0" }
+
+        Just val ->
+            val
+
+
+stringNumMinusNum : String -> Int -> String
+stringNumMinusNum stringNum num =
+    toString <| num - (Result.withDefault 0 <| String.toInt stringNum)
