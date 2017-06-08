@@ -45,7 +45,7 @@ init model location =
             ( { model | location = location.pathname }, Cmd.none )
 
         Nothing ->
-            ( Model "" "" location.pathname (EmotionDatum "5" "5") (Array.fromList [ EmotionDatum "1" "2", EmotionDatum "8" "2", EmotionDatum "10" "10", EmotionDatum "7" "5", EmotionDatum "8" "2" ]), Cmd.none )
+            ( Model "" "" location.pathname (EmotionDatum "5" "5") (Array.fromList []), Cmd.none )
 
 
 
@@ -75,7 +75,7 @@ update msg model =
             ( model, Cmd.batch [ Navigation.newUrl "/mood", setStorage model ] )
 
         EmotionSubmit ->
-            ( model, Navigation.newUrl "/graph" )
+            ( { model | emotionHistory = push model.current model.emotionHistory }, Cmd.batch [ Navigation.newUrl "/graph", setStorage model ] )
 
         Mood newMood ->
             ( { model | current = setMood newMood model.current }, Cmd.none )
@@ -133,7 +133,7 @@ loginForm model =
             []
         , label [ for "password", Html.Attributes.class "vh" ]
             [ Html.text "Password" ]
-        , input [ placeholder "password", Html.Attributes.type_ "password", value model.password, onInput Password, Html.Attributes.class "db w-100 center pa2 bn mt3" ]
+        , input [ Html.Attributes.id "password", placeholder "password", Html.Attributes.type_ "password", value model.password, onInput Password, Html.Attributes.class "db w-100 center pa2 bn mt3" ]
             []
         , button [ Html.Attributes.type_ "submit", Html.Attributes.class "grow bn ph3 pv2 white bg-blue db w-100 center mt3" ]
             [ Html.text "Log in" ]
