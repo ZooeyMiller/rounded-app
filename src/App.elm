@@ -160,8 +160,8 @@ recordMood model =
 
 graphView : Model -> Html Msg
 graphView model =
-    Html.div []
-        [ svg [ Svg.Attributes.height "250", viewBox ("0 0 " ++ (toString <| Array.length model.emotionHistory) ++ " 11"), Svg.Attributes.style "border-bottom: 3px solid black; stroke: black; stroke-width: 0.1; border-left: 3px solid black; margin-left: 5rem; margin-top: 5rem; " ]
+    Html.div [ Html.Attributes.class "h5 bl bb bw2 overflow-x-scroll" ]
+        [ svg [ Svg.Attributes.class "h-100", viewBox ("0 0 " ++ (toString <| Array.length model.emotionHistory) ++ " 11"), Svg.Attributes.strokeWidth "0.1" ]
             (plotGraph "mood" model.emotionHistory
                 ++ plotGraph "energy" model.emotionHistory
             )
