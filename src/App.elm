@@ -134,7 +134,7 @@ chooseView : Model -> Html Msg
 chooseView model =
     case model.location of
         "/" ->
-            loginView model
+            isNamed model emotionView
 
         "/mood" ->
             isNamed model emotionView
