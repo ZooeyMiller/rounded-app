@@ -70,13 +70,19 @@ update msg model =
             ( { model | name = newName }, Cmd.none )
 
         LoginSubmit ->
-            ( { model | confirmedName = model.name }, Cmd.batch [ Navigation.newUrl "/mood", setStorage model ] )
+          let newModel =
+            { model | confirmedName = model.name }
+          in
+            ( newModel, Cmd.batch [ Navigation.newUrl "/mood", setStorage newModel ] )
 
         EmotionToGraph ->
-            ( { model | emotionHistory = push model.current model.emotionHistory }, Cmd.batch [ Navigation.newUrl "/graph", setStorage model ] )
+          let newModel =
+            { model | emotionHistory = push model.current model.emotionHistory }
+          in
+            ( newModel, Cmd.batch [ setStorage newModel, Navigation.newUrl "/graph" ] )
 
         EmotionToEmotion ->
-            ( { model | emotionHistory = push model.current model.emotionHistory }, setStorage model )
+            ( { model | emotionHistory = push model.current model.emotionHistory }, Cmd.none )
 
         Mood newMood ->
             ( { model | current = setMood newMood model.current }, Cmd.none )
