@@ -8,7 +8,7 @@
     <style>
       input[type=range] {
         -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
-        width: 100%; /* Specific width is required for Firefox. */
+        /*width: 100%; /* Specific width is required for Firefox. */*/
         background: transparent; /* Otherwise white in Chrome */
         /*transform: rotate(-90deg);*/
       }
@@ -107,6 +107,13 @@
 
       .flex-1 {
         flex: 1;
+      }
+
+      .vertical-slider {
+        width: 24rem;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(270deg);
       }
 
       .top-50 {
