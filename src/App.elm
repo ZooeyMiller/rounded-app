@@ -8,6 +8,7 @@ import Navigation
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 
+
 main : Program Never Model Msg
 main =
     Navigation.program UrlChange
@@ -101,6 +102,7 @@ view model =
         [ chooseView model
         ]
 
+
 chooseView : Model -> Html Msg
 chooseView model =
     case model.location.pathname of
@@ -152,11 +154,24 @@ recordMood model =
 graphView : Model -> Html Msg
 graphView model =
     Html.div []
-        [ svg [ Svg.Attributes.height "200", viewBox ("0 0 " ++ (toString <| Array.length model.emotionHistory) ++ " 11"), Svg.Attributes.style "border-bottom: 3px solid black; stroke: black; stroke-width: 0.1; border-left: 3px solid black; margin-left: 5rem; margin-top: 5rem; " ]
-            (Array.toList (Array.indexedMap (\i emotion -> graphPoint i emotion.mood model.emotionHistory "mood") model.emotionHistory)
-                ++ Array.toList (Array.indexedMap (\i emotion -> graphPoint i emotion.energy model.emotionHistory "energy") model.emotionHistory)
+        [ svg [ Svg.Attributes.height "250", viewBox ("0 0 " ++ (toString <| Array.length model.emotionHistory) ++ " 11"), Svg.Attributes.style "border-bottom: 3px solid black; stroke: black; stroke-width: 0.1; border-left: 3px solid black; margin-left: 5rem; margin-top: 5rem; " ]
+            (plotGraph "mood" model.emotionHistory
+                ++ plotGraph "energy" model.emotionHistory
             )
         ]
+
+
+plotGraph : String -> Array EmotionDatum -> List (Svg Msg)
+plotGraph dataType array =
+    let
+        emotionType =
+            if dataType == "mood" then
+                .mood
+            else
+                .energy
+    in
+    Array.toList (Array.indexedMap (\i emotion -> graphPoint i (emotionType emotion) array dataType) array)
+
 
 
 graphPoint : Int -> String -> Array EmotionDatum -> String -> Svg Msg
@@ -206,6 +221,7 @@ graphPoint index y array toPlot =
                 ]
                 []
             ]
+
 
 getPoint : Maybe EmotionDatum -> EmotionDatum
 getPoint point =
