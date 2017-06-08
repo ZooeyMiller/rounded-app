@@ -1,4 +1,4 @@
-module Main exposing (..)
+port module Main exposing (..)
 
 import Array exposing (..)
 import Html exposing (..)
@@ -26,7 +26,7 @@ main =
 type alias Model =
     { username : String
     , password : String
-    , location : Navigation.Location
+    , location : String
     , current : EmotionDatum
     , emotionHistory : Array EmotionDatum
     }
@@ -42,10 +42,10 @@ init : Maybe Model -> Navigation.Location -> ( Model, Cmd Msg )
 init model location =
     case model of
         Just model ->
-            ( { model | location = location }, Cmd.none )
+            ( { model | location = location.pathname }, Cmd.none )
 
         Nothing ->
-            ( Model "" "" location (EmotionDatum "5" "5") (Array.fromList [ EmotionDatum "1" "2", EmotionDatum "8" "2", EmotionDatum "10" "10", EmotionDatum "7" "5", EmotionDatum "8" "2" ]), Cmd.none )
+            ( Model "" "" location.pathname (EmotionDatum "5" "5") (Array.fromList [ EmotionDatum "1" "2", EmotionDatum "8" "2", EmotionDatum "10" "10", EmotionDatum "7" "5", EmotionDatum "8" "2" ]), Cmd.none )
 
 
 
@@ -72,7 +72,7 @@ update msg model =
             ( { model | password = newPassword }, Cmd.none )
 
         LoginSubmit ->
-            ( model, Navigation.newUrl "/mood" )
+            ( model, Cmd.batch [ Navigation.newUrl "/mood", setStorage model ] )
 
         EmotionSubmit ->
             ( model, Navigation.newUrl "/graph" )
@@ -84,7 +84,7 @@ update msg model =
             ( { model | current = setEnergy newMood model.current }, Cmd.none )
 
         UrlChange newLocation ->
-            ( { model | location = newLocation }, Cmd.none )
+            ( { model | location = newLocation.pathname }, Cmd.none )
 
 
 setEnergy : String -> EmotionDatum -> EmotionDatum
@@ -110,7 +110,7 @@ view model =
 
 chooseView : Model -> Html Msg
 chooseView model =
-    case model.location.pathname of
+    case model.location of
         "/" ->
             loginForm model
 
@@ -240,3 +240,6 @@ getPoint point =
 stringNumMinusNum : String -> Int -> String
 stringNumMinusNum stringNum num =
     toString <| num - (Result.withDefault 0 <| String.toInt stringNum)
+
+
+port setStorage : Model -> Cmd msg

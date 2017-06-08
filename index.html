@@ -43,23 +43,19 @@ var state = {
     { energy: '5', mood: '7' },
     { energy: '2', mood: '8' },
   ],
-  location: {
-    hash: '',
-    host: '',
-    hostname: '',
-    href: '',
-    origin: '',
-    password: '',
-    pathname: '',
-    port_: '',
-    protocol: '',
-    search: '',
-    username: '',
-  },
+  location: '',
   password: '',
   username: 'it work?',
 };
-var app = Elm.Main.embed(node, state);
+
+var model = localStorage.getItem('model');
+var startingModel = model ? JSON.parse(model) : state;
+
+var app = Elm.Main.embed(node, startingModel);
+
+app.ports.setStorage.subscribe(function(state) {
+  localStorage.setItem('model', JSON.stringify(state));
+});
 </script>
   </body>
 </html>
