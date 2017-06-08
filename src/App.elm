@@ -126,17 +126,19 @@ chooseView model =
 
 loginForm : Model -> Html Msg
 loginForm model =
-    Html.form [ onSubmit LoginSubmit, Html.Attributes.class "flex flex-column items-center justify-center flex-auto ba br2 br4--top-right br4--bottom-left br--bottom-right b--blue bg-black-05 pa4 br2-m" ]
-        [ label [ for "username", Html.Attributes.class "vh" ]
-            [ Html.text "Username" ]
-        , input [ Html.Attributes.id "username", placeholder "Username", Html.Attributes.type_ "text", value model.username, onInput Username, Html.Attributes.class "db w-100 center pa2 bn" ]
-            []
-        , label [ for "password", Html.Attributes.class "vh" ]
-            [ Html.text "Password" ]
-        , input [ Html.Attributes.id "password", placeholder "password", Html.Attributes.type_ "password", value model.password, onInput Password, Html.Attributes.class "db w-100 center pa2 bn mt3" ]
-            []
-        , button [ Html.Attributes.type_ "submit", Html.Attributes.class "grow bn ph3 pv2 white bg-blue db w-100 center mt3" ]
-            [ Html.text "Log in" ]
+    div []
+        [ Html.form [ onSubmit LoginSubmit, Html.Attributes.class "flex flex-column items-center justify-center flex-auto ba br2 br4--top-right br4--bottom-left br--bottom-right b--blue bg-black-05 pa4 br2-m" ]
+            [ label [ for "username", Html.Attributes.class "vh" ]
+                [ Html.text "Username" ]
+            , input [ Html.Attributes.id "username", placeholder "Username", Html.Attributes.type_ "text", value model.username, onInput Username, Html.Attributes.class "db w-100 center pa2 bn" ]
+                []
+            , label [ for "password", Html.Attributes.class "vh" ]
+                [ Html.text "Password" ]
+            , input [ Html.Attributes.id "password", placeholder "password", Html.Attributes.type_ "password", value model.password, onInput Password, Html.Attributes.class "db w-100 center pa2 bn mt3" ]
+                []
+            , button [ Html.Attributes.type_ "submit", Html.Attributes.class "grow bn ph3 pv2 white bg-blue db w-100 center mt3" ]
+                [ Html.text "Log in" ]
+            ]
         ]
 
 
