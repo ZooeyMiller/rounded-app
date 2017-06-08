@@ -24,8 +24,8 @@ main =
 
 
 type alias Model =
-    { username : String
-    , password : String
+    { name : String
+    , confirmedName : String
     , location : String
     , current : EmotionDatum
     , emotionHistory : Array EmotionDatum
@@ -53,29 +53,30 @@ init model location =
 
 
 type Msg
-    = Username String
-    | Password String
+    = Name String
     | LoginSubmit
-    | EmotionSubmit
+    | EmotionToGraph
+    | EmotionToEmotion
     | UrlChange Navigation.Location
     | Mood String
     | Energy String
+    | NoMsg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Username newUsername ->
-            ( { model | username = newUsername }, Cmd.none )
-
-        Password newPassword ->
-            ( { model | password = newPassword }, Cmd.none )
+        Name newName ->
+            ( { model | name = newName }, Cmd.none )
 
         LoginSubmit ->
-            ( model, Cmd.batch [ Navigation.newUrl "/mood", setStorage model ] )
+            ( { model | confirmedName = model.name }, Cmd.batch [ Navigation.newUrl "/mood", setStorage model ] )
 
-        EmotionSubmit ->
+        EmotionToGraph ->
             ( { model | emotionHistory = push model.current model.emotionHistory }, Cmd.batch [ Navigation.newUrl "/graph", setStorage model ] )
+
+        EmotionToEmotion ->
+            ( { model | emotionHistory = push model.current model.emotionHistory }, setStorage model )
 
         Mood newMood ->
             ( { model | current = setMood newMood model.current }, Cmd.none )
@@ -85,6 +86,9 @@ update msg model =
 
         UrlChange newLocation ->
             ( { model | location = newLocation.pathname }, Cmd.none )
+
+        NoMsg ->
+          ( model, Cmd.none)
 
 
 setEnergy : String -> EmotionDatum -> EmotionDatum
@@ -107,10 +111,18 @@ view model =
         [ header [ Html.Attributes.class "pa3 bg-blue" ]
             [ span [ Html.Attributes.class "f3 ma0 tracked white" ] [ Html.text "☉ rounded" ]
             ]
-        , main_ [ Html.Attributes.class "flex flex-column justify-center w-100 h-100 pa4 mw6 center" ]
+        , div [Html.Attributes.class "pa4 flex-auto h-100"] [main_ [ Html.Attributes.class "flex flex-column justify-center w-100 h-100 pa4 mw6 center ba br2 br4--top-right br4--bottom-left br--bottom-right b--blue bg-light-gray pa4 br2-m" ]
             [ chooseView model ]
+            ]
         ]
 
+
+isNamed model viewFunction =
+  case model.confirmedName of
+    "" ->
+      loginView model
+    _ ->
+      viewFunction model
 
 chooseView : Model -> Html Msg
 chooseView model =
@@ -119,10 +131,10 @@ chooseView model =
             loginView model
 
         "/mood" ->
-            emotionView model
+            isNamed model emotionView
 
         "/graph" ->
-            graphView model
+            isNamed model graphView
 
         _ ->
             div [] [ Html.text "you're not supposed to be here" ]
@@ -130,24 +142,27 @@ chooseView model =
 
 loginView : Model -> Html Msg
 loginView model =
-    Html.form [ onSubmit LoginSubmit, Html.Attributes.class "flex flex-column items-center justify-center flex-auto ba br2 br4--top-right br4--bottom-left br--bottom-right b--blue bg-black-05 pa4 br2-m" ]
-        [ label [ for "username", Html.Attributes.class "vh" ]
-            [ Html.text "Username" ]
-        , input [ Html.Attributes.id "username", placeholder "Username", Html.Attributes.type_ "text", value model.username, onInput Username, Html.Attributes.class "db w-100 center pa2 bn" ]
-            []
-        , label [ for "password", Html.Attributes.class "vh" ]
-            [ Html.text "Password" ]
-        , input [ Html.Attributes.id "password", placeholder "password", Html.Attributes.type_ "password", value model.password, onInput Password, Html.Attributes.class "db w-100 center pa2 bn mt3" ]
+  div [] [
+    h1 [] [ Html.text "Welcome to rounded" ],
+    p [] [ Html.text "A way for you to keep track of variations in your mood."],
+    p [] [ Html.text "Enter your name to continue:"],
+    Html.form [ onSubmit LoginSubmit, Html.Attributes.class "flex flex-column items-center justify-center flex-auto pa4" ]
+        [ label [ for "name", Html.Attributes.class "vh" ]
+            [ Html.text "Name" ]
+        , input [ Html.Attributes.id "name", placeholder "Name", Html.Attributes.type_ "text", value model.name, onInput Name, Html.Attributes.class "db w-100 center pa2 bn" ]
             []
         , button [ Html.Attributes.type_ "submit", Html.Attributes.class "grow bn ph3 pv2 white bg-blue db w-100 center mt3" ]
-            [ Html.text "Log in" ]
+            [ Html.text "Go" ]
         ]
+      ]
 
 
 emotionView : Model -> Html Msg
 emotionView model =
     div []
-        [ Html.form [ onSubmit EmotionSubmit ]
+        [
+          p [] [ Html.text <| emotionViewPrompt model ],
+          Html.form [ onSubmit (emotionRouting model) ]
             [ label [ for "mood" ]
                 [ Html.text "Mood" ]
             , input [ Html.Attributes.id "mood", onInput Mood, Html.Attributes.max "10", Html.Attributes.min "0", value model.current.mood, Html.Attributes.type_ "range" ]
@@ -160,6 +175,26 @@ emotionView model =
                 [ Html.text "Submit" ]
             ]
         ]
+
+emotionRouting : Model -> Msg
+emotionRouting model =
+  case (Array.length model.emotionHistory) of
+    0 ->
+      EmotionToEmotion
+    1 ->
+      EmotionToEmotion
+    _ ->
+      EmotionToGraph
+
+emotionViewPrompt : Model -> String
+emotionViewPrompt model =
+  case (Array.length model.emotionHistory) of
+    0 ->
+      "How were you feeling 2 days ago?"
+    1 ->
+      "How were you feeling yesterday?"
+    _ ->
+      "How are you feeling now?"
 
 
 graphView : Model -> Html Msg
