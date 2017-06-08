@@ -9,9 +9,9 @@ import Svg exposing (..)
 import Svg.Attributes exposing (..)
 
 
-main : Program Never Model Msg
+main : Program (Maybe Model) Model Msg
 main =
-    Navigation.program UrlChange
+    Navigation.programWithFlags UrlChange
         { init = init
         , view = view
         , update = update
@@ -38,9 +38,14 @@ type alias EmotionDatum =
     }
 
 
-init : Navigation.Location -> ( Model, Cmd Msg )
-init location =
-    ( Model "" "" location (EmotionDatum "5" "5") (Array.fromList [ EmotionDatum "1" "2", EmotionDatum "8" "2", EmotionDatum "10" "10", EmotionDatum "7" "5", EmotionDatum "8" "2" ]), Cmd.none )
+init : Maybe Model -> Navigation.Location -> ( Model, Cmd Msg )
+init model location =
+    case model of
+        Just model ->
+            ( { model | location = location }, Cmd.none )
+
+        Nothing ->
+            ( Model "" "" location (EmotionDatum "5" "5") (Array.fromList [ EmotionDatum "1" "2", EmotionDatum "8" "2", EmotionDatum "10" "10", EmotionDatum "7" "5", EmotionDatum "8" "2" ]), Cmd.none )
 
 
 
@@ -171,7 +176,6 @@ plotGraph dataType array =
                 .energy
     in
     Array.toList (Array.indexedMap (\i emotion -> graphPoint i (emotionType emotion) array dataType) array)
-
 
 
 graphPoint : Int -> String -> Array EmotionDatum -> String -> Svg Msg
