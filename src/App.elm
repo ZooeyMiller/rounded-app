@@ -103,8 +103,12 @@ setMood newMood mood =
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ chooseView model
+    div [ Html.Attributes.class "flex flex-column vh-100" ]
+        [ header [ Html.Attributes.class "pa3 bg-blue" ]
+            [ span [ Html.Attributes.class "f3 ma0 tracked white" ] [ Html.text "☉ rounded" ]
+            ]
+        , main_ [ Html.Attributes.class "flex flex-column justify-center w-100 h-100 pa4 mw6 center" ]
+            [ chooseView model ]
         ]
 
 
@@ -112,10 +116,10 @@ chooseView : Model -> Html Msg
 chooseView model =
     case model.location of
         "/" ->
-            loginForm model
+            loginView model
 
         "/mood" ->
-            recordMood model
+            emotionView model
 
         "/graph" ->
             graphView model
@@ -124,8 +128,8 @@ chooseView model =
             div [] [ Html.text "you're not supposed to be here" ]
 
 
-loginForm : Model -> Html Msg
-loginForm model =
+loginView : Model -> Html Msg
+loginView model =
     Html.form [ onSubmit LoginSubmit, Html.Attributes.class "flex flex-column items-center justify-center flex-auto ba br2 br4--top-right br4--bottom-left br--bottom-right b--blue bg-black-05 pa4 br2-m" ]
         [ label [ for "username", Html.Attributes.class "vh" ]
             [ Html.text "Username" ]
@@ -140,26 +144,28 @@ loginForm model =
         ]
 
 
-recordMood : Model -> Html Msg
-recordMood model =
-    Html.form [ onSubmit EmotionSubmit ]
-        [ label [ for "mood" ]
-            [ Html.text "Mood" ]
-        , input [ Html.Attributes.id "mood", onInput Mood, Html.Attributes.max "10", Html.Attributes.min "0", value model.current.mood, Html.Attributes.type_ "range" ]
-            []
-        , label [ for "energy" ]
-            [ Html.text "Energy" ]
-        , input [ Html.Attributes.id "energy", onInput Energy, Html.Attributes.max "10", Html.Attributes.min "0", value model.current.energy, Html.Attributes.type_ "range" ]
-            []
-        , button [ Html.Attributes.type_ "submit" ]
-            [ Html.text "Submit" ]
+emotionView : Model -> Html Msg
+emotionView model =
+    div []
+        [ Html.form [ onSubmit EmotionSubmit ]
+            [ label [ for "mood" ]
+                [ Html.text "Mood" ]
+            , input [ Html.Attributes.id "mood", onInput Mood, Html.Attributes.max "10", Html.Attributes.min "0", value model.current.mood, Html.Attributes.type_ "range" ]
+                []
+            , label [ for "energy" ]
+                [ Html.text "Energy" ]
+            , input [ Html.Attributes.id "energy", onInput Energy, Html.Attributes.max "10", Html.Attributes.min "0", value model.current.energy, Html.Attributes.type_ "range" ]
+                []
+            , button [ Html.Attributes.type_ "submit" ]
+                [ Html.text "Submit" ]
+            ]
         ]
 
 
 graphView : Model -> Html Msg
 graphView model =
-    Html.div []
-        [ svg [ Svg.Attributes.height "250", viewBox ("0 0 " ++ (toString <| Array.length model.emotionHistory) ++ " 11"), Svg.Attributes.style "border-bottom: 3px solid black; stroke: black; stroke-width: 0.1; border-left: 3px solid black; margin-left: 5rem; margin-top: 5rem; " ]
+    Html.div [ Html.Attributes.class "relative h5 bl bb bw2 b--mid-gray overflow-x-scroll" ]
+        [ svg [ Svg.Attributes.class "absolute h-100", viewBox ("0 0 " ++ (toString <| Array.length model.emotionHistory) ++ " 11"), Svg.Attributes.strokeWidth "0.15" ]
             (plotGraph "mood" model.emotionHistory
                 ++ plotGraph "energy" model.emotionHistory
             )
