@@ -1,4 +1,4 @@
-module Main exposing (..)
+port module Main exposing (..)
 
 import Array exposing (..)
 import Html exposing (..)
@@ -9,9 +9,9 @@ import Svg exposing (..)
 import Svg.Attributes exposing (..)
 
 
-main : Program Never Model Msg
+main : Program (Maybe Model) Model Msg
 main =
-    Navigation.program UrlChange
+    Navigation.programWithFlags UrlChange
         { init = init
         , view = view
         , update = update
@@ -26,7 +26,7 @@ main =
 type alias Model =
     { username : String
     , password : String
-    , location : Navigation.Location
+    , location : String
     , current : EmotionDatum
     , emotionHistory : Array EmotionDatum
     }
@@ -38,9 +38,14 @@ type alias EmotionDatum =
     }
 
 
-init : Navigation.Location -> ( Model, Cmd Msg )
-init location =
-    ( Model "" "" location (EmotionDatum "5" "5") (Array.fromList [ EmotionDatum "1" "2", EmotionDatum "8" "2", EmotionDatum "10" "10", EmotionDatum "7" "5", EmotionDatum "8" "2" ]), Cmd.none )
+init : Maybe Model -> Navigation.Location -> ( Model, Cmd Msg )
+init model location =
+    case model of
+        Just model ->
+            ( { model | location = location.pathname }, Cmd.none )
+
+        Nothing ->
+            ( Model "" "" location.pathname (EmotionDatum "5" "5") (Array.fromList [ EmotionDatum "1" "2", EmotionDatum "8" "2", EmotionDatum "10" "10", EmotionDatum "7" "5", EmotionDatum "8" "2" ]), Cmd.none )
 
 
 
@@ -67,7 +72,7 @@ update msg model =
             ( { model | password = newPassword }, Cmd.none )
 
         LoginSubmit ->
-            ( model, Navigation.newUrl "/mood" )
+            ( model, Cmd.batch [ Navigation.newUrl "/mood", setStorage model ] )
 
         EmotionSubmit ->
             ( model, Navigation.newUrl "/graph" )
@@ -79,7 +84,7 @@ update msg model =
             ( { model | current = setEnergy newMood model.current }, Cmd.none )
 
         UrlChange newLocation ->
-            ( { model | location = newLocation }, Cmd.none )
+            ( { model | location = newLocation.pathname }, Cmd.none )
 
 
 setEnergy : String -> EmotionDatum -> EmotionDatum
@@ -105,7 +110,7 @@ view model =
 
 chooseView : Model -> Html Msg
 chooseView model =
-    case model.location.pathname of
+    case model.location of
         "/" ->
             loginForm model
 
@@ -173,7 +178,6 @@ plotGraph dataType array =
     Array.toList (Array.indexedMap (\i emotion -> graphPoint i (emotionType emotion) array dataType) array)
 
 
-
 graphPoint : Int -> String -> Array EmotionDatum -> String -> Svg Msg
 graphPoint index y array toPlot =
     let
@@ -236,3 +240,6 @@ getPoint point =
 stringNumMinusNum : String -> Int -> String
 stringNumMinusNum stringNum num =
     toString <| num - (Result.withDefault 0 <| String.toInt stringNum)
+
+
+port setStorage : Model -> Cmd msg
