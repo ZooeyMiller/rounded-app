@@ -1,11 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Rounded</title>
-    <link rel="stylesheet" href="css/tachyons.min.css">
+   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Rounded</title>
+  <link rel="stylesheet" href="css/tachyons.min.css">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#357edd">
+  <meta name="theme-color" content="#357edd">
     <style>
       body {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
@@ -176,6 +182,18 @@ var app = Elm.Main.embed(node, startingModel);
 app.ports.setStorage.subscribe(function(state) {
   localStorage.setItem('model', JSON.stringify(state));
 });
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker
+    .register('/js/service-worker.js')
+    .then(() => {
+      console.log('Service worker registered');
+    })
+    .catch(err => {
+      console.log('Service worker registration failed: ' + err);
+    });
+}
 </script>
-  </body>
+</body>
+
 </html>
