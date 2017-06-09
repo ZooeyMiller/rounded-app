@@ -235,13 +235,13 @@ emotionViewPrompt : Model -> String
 emotionViewPrompt model =
     case Array.length model.emotionHistory of
         0 ->
-            "How were you feeling 2 days ago?"
+            "Hi " ++ model.confirmedName ++ ", how were you feeling 2 days ago?"
 
         1 ->
             "How were you feeling yesterday?"
 
         _ ->
-            "How are you feeling now?"
+            "How are you feeling today " ++ model.confirmedName ++ "?"
 
 
 graphView : Model -> Html Msg
