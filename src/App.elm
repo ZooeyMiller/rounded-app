@@ -2,11 +2,11 @@ port module Main exposing (..)
 
 import Array exposing (..)
 import Html exposing (..)
-import Html.Attributes exposing (..)
+import Html.Attributes as Ha exposing (..)
 import Html.Events exposing (..)
 import Navigation
 import Svg exposing (..)
-import Svg.Attributes exposing (..)
+import Svg.Attributes as Sa exposing (..)
 
 
 main : Program (Maybe Model) Model Msg
@@ -128,12 +128,12 @@ emotionDatumWithFloatToInt emotions =
 
 view : Model -> Html Msg
 view model =
-    div [ Html.Attributes.class "flex flex-column vh-100" ]
-        [ header [ Html.Attributes.class "pa3 bg-blue" ]
-            [ span [ Html.Attributes.class "f3 ma0 tracked white" ] [ Html.text "☉ rounded" ]
+    div [ Ha.class "flex flex-column vh-100" ]
+        [ header [ Ha.class "pa3 bg-blue" ]
+            [ span [ Ha.class "f3 ma0 tracked white" ] [ Html.text "☉ rounded" ]
             ]
-        , div [ Html.Attributes.class "pa4 flex-auto h-100" ]
-            [ main_ [ Html.Attributes.class "flex flex-column justify-center w-100 h-100 pa4 mw6 center ba br2 br4--top-right br4--bottom-left br--bottom-right b--blue bg-light-gray pa4 br2-m" ]
+        , div [ Ha.class "pa4 flex-auto h-100" ]
+            [ main_ [ Ha.class "flex flex-column justify-center w-100 h-100 pa4 mw6 center ba br2 br4--top-right br4--bottom-left br--bottom-right b--blue bg-light-gray pa4 br2-m" ]
                 [ chooseView model ]
             ]
         ]
@@ -167,15 +167,15 @@ chooseView model =
 loginView : Model -> Html Msg
 loginView model =
     div []
-        [ h1 [] [ Html.text "Welcome to rounded" ]
-        , p [] [ Html.text "A way for you to keep track of variations in your mood." ]
-        , p [] [ Html.text "Enter your name to continue:" ]
-        , Html.form [ onSubmit LoginSubmit, Html.Attributes.class "flex flex-column items-center justify-center flex-auto pa4" ]
-            [ label [ for "name", Html.Attributes.class "vh" ]
+        [ h1 [ Ha.class "lh-solid" ] [ Html.text "Welcome to rounded" ]
+        , p [ Ha.class "mt2" ] [ Html.text "A way for you to keep track of variations in your mood." ]
+        , p [ Ha.class "mt2" ] [ Html.text "Enter your name to continue:" ]
+        , Html.form [ onSubmit LoginSubmit, Ha.class "flex flex-column items-center justify-center flex-auto mt3" ]
+            [ label [ for "name", Ha.class "vh" ]
                 [ Html.text "Name" ]
-            , input [ Html.Attributes.id "name", placeholder "Name", Html.Attributes.type_ "text", value model.name, onInput Name, Html.Attributes.class "db w-100 center pa2 bn" ]
+            , input [ Ha.id "name", placeholder "Name", Ha.type_ "text", value model.name, onInput Name, Ha.class "db w-100 center pa2 bn" ]
                 []
-            , button [ Html.Attributes.type_ "submit", Html.Attributes.class "grow bn ph3 pv2 white bg-blue db w-100 center mt3" ]
+            , button [ Ha.type_ "submit", Ha.class "grow bn ph3 pv2 white bg-blue db w-100 center mt3" ]
                 [ Html.text "Go" ]
             ]
         ]
@@ -183,36 +183,36 @@ loginView model =
 
 emotionView : Model -> Html Msg
 emotionView model =
-    div [ Html.Attributes.class "h-100" ]
+    div [ Ha.class "h-100 flex flex-column" ]
         [ p [] [ Html.text <| emotionViewPrompt model ]
-        , Html.form [ Html.Attributes.class "h-100 flex flex-column", onSubmit (emotionRouting model) ]
-            [ div [ Html.Attributes.class "flex flex-1" ]
-                [ label [ Html.Attributes.class "vh", for "mood" ]
+        , Html.form [ Ha.class "flex flex-column mt2 flex-1", onSubmit (emotionRouting model) ]
+            [ div [ Ha.class "flex flex-1" ]
+                [ label [ Ha.class "vh", for "mood" ]
                     [ Html.text "Mood" ]
-                , div [ Html.Attributes.class "relative flex flex-1 flex-column items-center" ]
-                    [ div [ Html.Attributes.class "w4 pv2 white bg-gray tc br2" ]
+                , div [ Ha.class "relative flex flex-1 flex-column items-stretch" ]
+                    [ div [ Ha.class "pa2 white bg-gray tc br2" ]
                         [ Html.text "Good" ]
-                    , div [ Html.Attributes.class "flex-1 left-0 w-100 h-100" ]
-                        [ input [ Html.Attributes.class "vertical-slider absolute top-50 rotate-270", Html.Attributes.id "mood", Html.Attributes.max "10", Html.Attributes.min "0", Html.Attributes.step "0.1", Html.Attributes.type_ "range", value model.current.mood, onInput Mood ]
+                    , div [ Ha.class "flex-1 vh-40" ]
+                        [ input [ Ha.class "vertical-slider", Ha.id "mood", Ha.max "10", Ha.min "0", Ha.step "0.1", Ha.type_ "range", value model.current.mood, onInput Mood ]
                             []
                         ]
-                    , div [ Html.Attributes.class "w4 pv2 white bg-gray tc br2" ]
+                    , div [ Ha.class "pa2 white bg-gray tc br2" ]
                         [ Html.text "Bad" ]
                     ]
-                , label [ Html.Attributes.class "vh", for "energy" ]
+                , label [ Ha.class "vh", for "energy" ]
                     [ Html.text "Energy" ]
-                , div [ Html.Attributes.class "relative flex flex-1 flex-column items-center" ]
-                    [ div [ Html.Attributes.class "w4 pv2 white bg-gray tc br2" ]
+                , div [ Ha.class "relative flex flex-1 flex-column items-stretch ml4" ]
+                    [ div [ Ha.class "pa2 white bg-gray tc br2" ]
                         [ Html.text "Energetic" ]
-                    , div [ Html.Attributes.class "flex-1 left-0 w-100 h-100" ]
-                        [ input [ Html.Attributes.class "vertical-slider absolute top-50 rotate-270", Html.Attributes.id "energy", Html.Attributes.max "10", Html.Attributes.min "0", Html.Attributes.step "0.1", Html.Attributes.type_ "range", value model.current.energy, onInput Energy ]
+                    , div [ Ha.class "flex-1 vh-40" ]
+                        [ input [ Ha.class "vertical-slider", Ha.id "energy", Ha.max "10", Ha.min "0", Ha.step "0.1", Ha.type_ "range", value model.current.energy, onInput Energy ]
                             []
                         ]
-                    , div [ Html.Attributes.class "w4 pv2 white bg-gray tc br2" ]
+                    , div [ Ha.class "pa2 white bg-gray tc br2" ]
                         [ Html.text "Exhausted" ]
                     ]
                 ]
-            , button [ Html.Attributes.class "grow bn mt4 ph3 pv2 white bg-blue db w-100", Html.Attributes.type_ "submit" ]
+            , button [ Ha.class "grow bn mt2 ph3 pv2 white bg-blue db w-100", Ha.type_ "submit" ]
                 [ Html.text "Submit" ]
             ]
         ]
@@ -246,8 +246,8 @@ emotionViewPrompt model =
 
 graphView : Model -> Html Msg
 graphView model =
-    Html.div [ Html.Attributes.class "relative h5 bl bb bw2 b--mid-gray overflow-x-scroll" ]
-        [ svg [ Svg.Attributes.class "absolute h-100", viewBox ("0 0 " ++ (toString <| Array.length model.emotionHistory) ++ " 11"), Svg.Attributes.strokeWidth "0.15" ]
+    Html.div [ Ha.class "relative h5 bl bb bw2 b--mid-gray overflow-x-scroll" ]
+        [ svg [ Sa.class "absolute h-100", viewBox ("0 0 " ++ (toString <| Array.length model.emotionHistory) ++ " 11"), Sa.strokeWidth "0.15" ]
             (plotGraph "mood" model.emotionHistory
                 ++ plotGraph "energy" model.emotionHistory
             )
@@ -286,7 +286,7 @@ graphPoint index y array toPlot =
             [ cx (toString index)
             , cy (stringNumMinusNum y 11)
             , r "0.2"
-            , Svg.Attributes.style ("fill: " ++ dataColour ++ "; stroke: " ++ dataColour ++ ";")
+            , Sa.style ("fill: " ++ dataColour ++ "; stroke: " ++ dataColour ++ ";")
             ]
             []
     else
@@ -295,7 +295,7 @@ graphPoint index y array toPlot =
                 [ cx (toString index)
                 , cy (stringNumMinusNum y 11)
                 , r "0.2"
-                , Svg.Attributes.style ("fill: " ++ dataColour ++ "; stroke: " ++ dataColour ++ ";")
+                , Sa.style ("fill: " ++ dataColour ++ "; stroke: " ++ dataColour ++ ";")
                 ]
                 []
             , Svg.path
@@ -309,7 +309,7 @@ graphPoint index y array toPlot =
                         ++ " "
                         ++ stringNumMinusNum y 11
                     )
-                , Svg.Attributes.style ("stroke: " ++ dataColour)
+                , Sa.style ("stroke: " ++ dataColour)
                 ]
                 []
             ]
