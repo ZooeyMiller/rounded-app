@@ -79,12 +79,18 @@ update msg model =
         EmotionToGraph ->
             let
                 newModel =
-                    { model | emotionHistory = push (emotionDatumWithFloatToInt model.current) model.emotionHistory }
+                    { model | emotionHistory = push (emotionDatumWithFloatToInt model.current) model.emotionHistory
+                            , current = EmotionDatum "5" "5" }
             in
             ( newModel, Cmd.batch [ setStorage newModel, Navigation.newUrl "/graph" ] )
 
         EmotionToEmotion ->
-            ( { model | emotionHistory = push (emotionDatumWithFloatToInt model.current) model.emotionHistory }, Cmd.none )
+          let
+              newModel =
+                  { model | emotionHistory = push (emotionDatumWithFloatToInt model.current) model.emotionHistory
+                          , current = EmotionDatum "5" "5" }
+          in
+            ( newModel, Navigation.newUrl "/mood" )
 
         Mood newMood ->
             ( { model | current = setMood newMood model.current }, Cmd.none )
@@ -129,14 +135,46 @@ emotionDatumWithFloatToInt emotions =
 view : Model -> Html Msg
 view model =
     div [ Ha.class "flex flex-column vh-100" ]
-        [ header [ Ha.class "pa3 bg-blue" ]
-            [ span [ Ha.class "f3 ma0 tracked white" ] [ Html.text "☉ rounded" ]
+        [ header [ Ha.class "pa3 bg-blue flex items-center white" ]
+            [ span [ Ha.class "f3 ma0 tracked" ] [ Html.text "☉ rounded" ]
+            , renderGraphLink model
             ]
         , div [ Ha.class "pa4 flex-auto h-100" ]
             [ main_ [ Ha.class "flex flex-column justify-center w-100 h-100 pa4 mw6 center ba br2 br4--top-right br4--bottom-left br--bottom-right b--blue bg-light-gray pa4 br2-m" ]
                 [ chooseView model ]
             ]
         ]
+
+
+renderGraphLink : Model -> Html Msg
+renderGraphLink model =
+    case Array.length model.emotionHistory of
+        3 ->
+            nav [ Ha.class "ml-auto" ]
+                [ Html.a [ Ha.href "/graph", Ha.class "flex items-center justify-center w2 h2 pa1" ]
+                    [ svg [ Sa.class "w-100 bl bb bw1", fill "white", attribute "stroke" "white", attribute "stroke-width" "8", viewBox "0 0 100 100" ]
+                        [ Svg.path [ d "M10 95 L20 90" ]
+                            []
+                        , Svg.path [ d "M20 90 L30 75" ]
+                            []
+                        , Svg.path [ d "M30 75 L40 80" ]
+                            []
+                        , Svg.path [ d "M40 80 L50 55" ]
+                            []
+                        , Svg.path [ d "M50 55 L60 65" ]
+                            []
+                        , Svg.path [ d "M60 65 L70 35" ]
+                            []
+                        , Svg.path [ d "M70 35 L80 25" ]
+                            []
+                        , Svg.path [ d "M80 25 L90 10" ]
+                            []
+                        ]
+                    ]
+                ]
+
+        _ ->
+            nav [ Ha.class "ml-auto" ] []
 
 
 isNamed model viewFunction =
