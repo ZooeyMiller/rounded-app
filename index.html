@@ -154,16 +154,9 @@
 <script src="js/app.js"></script>
 <script>
 var node = document.getElementById('app');
-var state = {
-  current: { energy: '5', mood: '5' },
-  emotionHistory: [],
-  location: '',
-  password: '',
-  username: 'it work?',
-};
 
 var model = localStorage.getItem('model');
-var startingModel = model ? JSON.parse(model) : state;
+var startingModel = model ? JSON.parse(model) : null;
 
 var app = Elm.Main.embed(node, startingModel);
 
