@@ -79,17 +79,21 @@ update msg model =
         EmotionToGraph ->
             let
                 newModel =
-                    { model | emotionHistory = push (emotionDatumWithFloatToInt model.current) model.emotionHistory
-                            , current = EmotionDatum "5" "5" }
+                    { model
+                        | emotionHistory = push (emotionDatumWithFloatToInt model.current) model.emotionHistory
+                        , current = EmotionDatum "5" "5"
+                    }
             in
             ( newModel, Cmd.batch [ setStorage newModel, Navigation.newUrl "/graph" ] )
 
         EmotionToEmotion ->
-          let
-              newModel =
-                  { model | emotionHistory = push (emotionDatumWithFloatToInt model.current) model.emotionHistory
-                          , current = EmotionDatum "5" "5" }
-          in
+            let
+                newModel =
+                    { model
+                        | emotionHistory = push (emotionDatumWithFloatToInt model.current) model.emotionHistory
+                        , current = EmotionDatum "5" "5"
+                    }
+            in
             ( newModel, Navigation.newUrl "/mood" )
 
         Mood newMood ->
@@ -148,33 +152,38 @@ view model =
 
 renderGraphLink : Model -> Html Msg
 renderGraphLink model =
-    case Array.length model.emotionHistory of
-        3 ->
-            nav [ Ha.class "ml-auto" ]
-                [ Html.a [ Ha.href "/graph", Ha.class "flex items-center justify-center w2 h2 pa1" ]
-                    [ svg [ Sa.class "w-100 bl bb bw1", fill "white", attribute "stroke" "white", attribute "stroke-width" "8", viewBox "0 0 100 100" ]
-                        [ Svg.path [ d "M10 95 L20 90" ]
-                            []
-                        , Svg.path [ d "M20 90 L30 75" ]
-                            []
-                        , Svg.path [ d "M30 75 L40 80" ]
-                            []
-                        , Svg.path [ d "M40 80 L50 55" ]
-                            []
-                        , Svg.path [ d "M50 55 L60 65" ]
-                            []
-                        , Svg.path [ d "M60 65 L70 35" ]
-                            []
-                        , Svg.path [ d "M70 35 L80 25" ]
-                            []
-                        , Svg.path [ d "M80 25 L90 10" ]
-                            []
-                        ]
+    if model.location == "/graph" then
+        nav [ Ha.class "ml-auto" ]
+            [ Html.a [ Ha.href "/mood", Ha.class "flex items-center justify-center w2 h2 pa1" ]
+                [ svg [ Sa.class "w-100", fill "none", attribute "height" "32", attribute "stroke" "currentcolor", attribute "stroke-linecap" "round", attribute "stroke-linejoin" "round", attribute "stroke-width" "2", Sa.viewBox "0 0 32 32", attribute "width" "32" ]
+                    [ Svg.path [ Sa.d "M16 2 L16 30 M2 16 L30 16" ] [] ]
+                ]
+            ]
+    else if Array.length model.emotionHistory > 2 then
+        nav [ Ha.class "ml-auto" ]
+            [ Html.a [ Ha.href "/graph", Ha.class "flex items-center justify-center w2 h2 pa1" ]
+                [ svg [ Sa.class "w-100 bl bb bw1", fill "white", attribute "stroke" "white", attribute "stroke-width" "8", viewBox "0 0 100 100" ]
+                    [ Svg.path [ d "M10 95 L20 90" ]
+                        []
+                    , Svg.path [ d "M20 90 L30 75" ]
+                        []
+                    , Svg.path [ d "M30 75 L40 80" ]
+                        []
+                    , Svg.path [ d "M40 80 L50 55" ]
+                        []
+                    , Svg.path [ d "M50 55 L60 65" ]
+                        []
+                    , Svg.path [ d "M60 65 L70 35" ]
+                        []
+                    , Svg.path [ d "M70 35 L80 25" ]
+                        []
+                    , Svg.path [ d "M80 25 L90 10" ]
+                        []
                     ]
                 ]
-
-        _ ->
-            nav [ Ha.class "ml-auto" ] []
+            ]
+    else
+        nav [ Ha.class "ml-auto" ] []
 
 
 isNamed model viewFunction =
