@@ -79,12 +79,18 @@ update msg model =
         EmotionToGraph ->
             let
                 newModel =
-                    { model | emotionHistory = push (emotionDatumWithFloatToInt model.current) model.emotionHistory }
+                    { model | emotionHistory = push (emotionDatumWithFloatToInt model.current) model.emotionHistory
+                            , current = EmotionDatum "5" "5" }
             in
             ( newModel, Cmd.batch [ setStorage newModel, Navigation.newUrl "/graph" ] )
 
         EmotionToEmotion ->
-            ( { model | emotionHistory = push (emotionDatumWithFloatToInt model.current) model.emotionHistory }, Cmd.none )
+          let
+              newModel =
+                  { model | emotionHistory = push (emotionDatumWithFloatToInt model.current) model.emotionHistory
+                          , current = EmotionDatum "5" "5" }
+          in
+            ( newModel, Navigation.newUrl "/mood" )
 
         Mood newMood ->
             ( { model | current = setMood newMood model.current }, Cmd.none )
