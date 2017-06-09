@@ -246,11 +246,15 @@ emotionViewPrompt model =
 
 graphView : Model -> Html Msg
 graphView model =
-    Html.div [ Ha.class "relative h5 bl bb bw2 b--mid-gray overflow-x-scroll" ]
-        [ svg [ Sa.class "absolute h-100", viewBox ("0 0 " ++ (toString <| Array.length model.emotionHistory) ++ " 11"), Sa.strokeWidth "0.15" ]
-            (plotGraph "mood" model.emotionHistory
-                ++ plotGraph "energy" model.emotionHistory
-            )
+    Html.div []
+        [ Html.h2 [ Ha.class "tc" ] [ Html.text ("Here are your results, " ++ model.name ++ "!") ]
+        , Html.div [ Ha.class "relative h5 bl bb bw2 b--mid-gray overflow-x-scroll" ]
+            [ svg
+                [ Sa.class "absolute h-100", viewBox ("0 0 " ++ (toString <| Array.length model.emotionHistory) ++ " 11"), Sa.strokeWidth "0.15" ]
+                (plotGraph "mood" model.emotionHistory
+                    ++ plotGraph "energy" model.emotionHistory
+                )
+            ]
         ]
 
 
