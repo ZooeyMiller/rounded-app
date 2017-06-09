@@ -217,9 +217,10 @@ chooseView model =
 loginView : Model -> Html Msg
 loginView model =
     div []
-        [ h1 [ Ha.class "lh-solid" ] [ Html.text "Welcome to rounded" ]
-        , p [ Ha.class "mt2" ] [ Html.text "A way for you to keep track of variations in your mood." ]
-        , p [ Ha.class "mt2" ] [ Html.text "Enter your name to continue:" ]
+        [ h1 [ Ha.class "lh-solid tc" ] [ Html.text "Welcome to rounded" ]
+        , p [ Ha.class "mt2 tc" ] [ Html.text "A way for you to keep track of variations in your mood." ]
+        , p [ Ha.class "mt2 tc" ] [ Html.text "We recommend inputting once a day to get the best use out of rounded." ]
+        , p [ Ha.class "mt2 tc" ] [ Html.text "Enter your name to continue:" ]
         , Html.form [ onSubmit LoginSubmit, Ha.class "flex flex-column items-center justify-center flex-auto mt3" ]
             [ label [ for "name", Ha.class "vh" ]
                 [ Html.text "Name" ]
