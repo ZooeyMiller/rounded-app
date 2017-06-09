@@ -1,163 +1,175 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Rounded</title>
-    <link rel="stylesheet" href="css/tachyons.min.css">
-    <style>
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-      }
 
-      input,
-      button {
-        font-family: inherit;
-        color: inherit;
-      }
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Rounded</title>
+  <link rel="stylesheet" href="css/tachyons.min.css">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#357edd">
+  <meta name="theme-color" content="#357edd">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    }
 
-      h1,
-      h2,
-      h3,
-      p {
-        margin: 0;
-      }
+    input,
+    button {
+      font-family: inherit;
+      color: inherit;
+    }
 
-      input[type=range] {
-        -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
-        background: transparent; /* Otherwise white in Chrome */
-        /*transform: rotate(-90deg);*/
-      }
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
 
-      input[type=range]::-webkit-slider-thumb {
-        -webkit-appearance: none;
-      }
+    input[type=range] {
+      -webkit-appearance: none;
+      /* Hides the slider so that custom slider can be made */
+      background: transparent;
+      /* Otherwise white in Chrome */
+      /*transform: rotate(-90deg);*/
+    }
 
-      input[type=range]:focus {
-        outline: none; /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
-      }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+    }
 
-      input[type=range]::-ms-track {
-        width: 100%;
-        cursor: pointer;
+    input[type=range]:focus {
+      outline: none;
+      /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
+    }
+
+    input[type=range]::-ms-track {
+      width: 100%;
+      cursor: pointer;
 
       /* Hides the slider so custom styles can be added */
-        background: transparent;
-        border-color: transparent;
-        color: transparent;
-      }
+      background: transparent;
+      border-color: transparent;
+      color: transparent;
+    }
 
-      input[type=range]::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        height: 2rem;
-        width: 2rem;
-        border-radius: 50%;
-        background: #357edd;
-        cursor: pointer;
-        margin-top: -14px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
-      }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 2rem;
+      width: 2rem;
+      border-radius: 50%;
+      background: #357edd;
+      cursor: pointer;
+      margin-top: -14px;
+      /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+    }
+    /* All the same stuff for Firefox */
 
-      /* All the same stuff for Firefox */
-      input[type=range]::-moz-range-thumb {
-        height: 2rem;
-        width: 2rem;
-        border-radius: 50%;
-        background: #357edd;
-        cursor: pointer;
-      }
+    input[type=range]::-moz-range-thumb {
+      height: 2rem;
+      width: 2rem;
+      border-radius: 50%;
+      background: #357edd;
+      cursor: pointer;
+    }
+    /* All the same stuff for IE */
 
-      /* All the same stuff for IE */
-      input[type=range]::-ms-thumb {
-        height: 2rem;
-        width: 2rem;
-        border-radius: 50%;
-        background: #357edd;
-        cursor: pointer;
-      }
+    input[type=range]::-ms-thumb {
+      height: 2rem;
+      width: 2rem;
+      border-radius: 50%;
+      background: #357edd;
+      cursor: pointer;
+    }
 
-      input[type=range]::-webkit-slider-runnable-track {
-        width: 100%;
-        height: 0.5rem;
-        cursor: pointer;
-        background: #999;
-        border-radius: 0.125rem;
-      }
+    input[type=range]::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 0.5rem;
+      cursor: pointer;
+      background: #999;
+      border-radius: 0.125rem;
+    }
 
-      input[type=range]:focus::-webkit-slider-runnable-track {
-        background: #367ebd;
-      }
+    input[type=range]:focus::-webkit-slider-runnable-track {
+      background: #367ebd;
+    }
 
-      input[type=range]::-moz-range-track {
-        width: 100%;
-        height: 0.5rem;
-        cursor: pointer;
-        background: #999;
-        border-radius: 0.125rem;
-      }
+    input[type=range]::-moz-range-track {
+      width: 100%;
+      height: 0.5rem;
+      cursor: pointer;
+      background: #999;
+      border-radius: 0.125rem;
+    }
 
-      input[type=range]::-ms-track {
-        width: 100%;
-        height: 0.5rem;
-        cursor: pointer;
-        background: #999;
-        border-radius: 0.125rem;
-      }
+    input[type=range]::-ms-track {
+      width: 100%;
+      height: 0.5rem;
+      cursor: pointer;
+      background: #999;
+      border-radius: 0.125rem;
+    }
 
-      .flex-1 {
-        flex: 1;
-      }
+    .flex-1 {
+      flex: 1;
+    }
 
-      .vertical-slider {
-        position: absolute;
-        width: 40vh;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%) rotate(270deg);
-      }
+    .vertical-slider {
+      position: absolute;
+      width: 40vh;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(270deg);
+    }
 
-      .vh-40 {
-        height: 40vh;
-      }
+    .vh-40 {
+      height: 40vh;
+    }
 
-      .top-50 {
-        top: 50%;
-      }
+    .top-50 {
+      top: 50%;
+    }
 
-      .left-3 {
-        left: 3rem;
-      }
+    .left-3 {
+      left: 3rem;
+    }
 
-      .left--3 {
-        left: -3rem;
-      }
+    .left--3 {
+      left: -3rem;
+    }
 
-      .br4--top-right {
-        border-top-right-radius: 1rem;
-      }
+    .br4--top-right {
+      border-top-right-radius: 1rem;
+    }
 
-      .br4--bottom-left {
-        border-bottom-left-radius: 1rem;
-      }
+    .br4--bottom-left {
+      border-bottom-left-radius: 1rem;
+    }
 
-      .vh {
-        border: 0;
-        clip: rect(0 0 0 0);
-        height: 1px;
-        margin: -1px;
-        overflow: hidden;
-        padding: 0;
-        position: absolute;
-        width: 1px;
-        white-space: nowrap;
-      }
-    </style>
-  </head>
-  <body class="helvetica dark-gray">
-    <div id="app"></div>
-<script src="js/app.js"></script>
-<script>
-var node = document.getElementById('app');
+    .vh {
+      border: 0;
+      clip: rect(0 0 0 0);
+      height: 1px;
+      margin: -1px;
+      overflow: hidden;
+      padding: 0;
+      position: absolute;
+      width: 1px;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+
+<body class="helvetica dark-gray">
+  <div id="app"></div>
+  <script src="js/app.js"></script>
+  <script>
+  var node = document.getElementById('app');
 
 var model = localStorage.getItem('model');
 var startingModel = model ? JSON.parse(model) : null;
@@ -167,6 +179,18 @@ var app = Elm.Main.embed(node, startingModel);
 app.ports.setStorage.subscribe(function(state) {
   localStorage.setItem('model', JSON.stringify(state));
 });
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker
+    .register('/js/service-worker.js')
+    .then(() => {
+      console.log('Service worker registered');
+    })
+    .catch(err => {
+      console.log('Service worker registration failed: ' + err);
+    });
+}
 </script>
-  </body>
+</body>
+
 </html>
