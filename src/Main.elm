@@ -117,7 +117,10 @@ setMood newMood mood =
 
 stringFloatToStringInt : String -> String
 stringFloatToStringInt stringFloat =
-    toString <| round <| Result.withDefault 0 <| String.toFloat stringFloat
+    String.toFloat stringFloat
+      |> Result.withDefault 0
+      |> round
+      |> toString
 
 
 emotionDatumWithFloatToInt : EmotionDatum -> EmotionDatum
@@ -288,7 +291,11 @@ graphView model =
         [ Html.h2 [ Ha.class "tc" ] [ Html.text ("Here are your results, " ++ model.name ++ "!") ]
         , Html.div [ Ha.class "relative h5 bl bb bw2 b--mid-gray overflow-x-scroll" ]
             [ svg
-                [ Sa.class "absolute h-100", viewBox ("0 0 " ++ (toString <| Array.length model.emotionHistory) ++ " 11"), Sa.strokeWidth "0.15" ]
+                [ Sa.class "absolute h-100", viewBox ("0 0 "
+                ++ (Array.length model.emotionHistory
+                    |> toString)
+                ++ " 11"), Sa.strokeWidth "0.15"
+                ]
                 (plotGraph "mood" model.emotionHistory
                     ++ plotGraph "energy" model.emotionHistory
                 )
@@ -345,9 +352,12 @@ graphPoint index y array toPlot =
                     ("M"
                         ++ toString (index - 1)
                         ++ " "
-                        ++ stringNumMinusNum (dataType <| getPoint <| Array.get (index - 1) array) 11
+                        ++ stringNumMinusNum (Array.get (index - 1) array
+                            |> getPoint
+                            |> dataType
+                           ) 11
                         ++ " L"
-                        ++ (toString <| index)
+                        ++ (toString index)
                         ++ " "
                         ++ stringNumMinusNum y 11
                     )
@@ -369,7 +379,8 @@ getPoint point =
 
 stringNumMinusNum : String -> Int -> String
 stringNumMinusNum stringNum num =
-    toString <| num - (Result.withDefault 0 <| String.toInt stringNum)
+    num - (String.toInt stringNum |> Result.withDefault 0)
+      |> toString
 
 
 port setStorage : Model -> Cmd msg
