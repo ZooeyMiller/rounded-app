@@ -60,6 +60,7 @@ type Msg
     | UrlChange Navigation.Location
     | Mood String
     | Energy String
+    | Route String
     | NoMsg
 
 
@@ -105,6 +106,9 @@ update msg model =
         UrlChange newLocation ->
             ( { model | location = newLocation.pathname }, Cmd.none )
 
+        Route location ->
+            ( model, Navigation.newUrl location )
+
         NoMsg ->
             ( model, Cmd.none )
 
@@ -122,9 +126,9 @@ setMood newMood mood =
 stringFloatToStringInt : String -> String
 stringFloatToStringInt stringFloat =
     String.toFloat stringFloat
-      |> Result.withDefault 0
-      |> round
-      |> toString
+        |> Result.withDefault 0
+        |> round
+        |> toString
 
 
 emotionDatumWithFloatToInt : EmotionDatum -> EmotionDatum
@@ -157,14 +161,14 @@ renderGraphLink : Model -> Html Msg
 renderGraphLink model =
     if model.location == "/graph" then
         nav [ Ha.class "ml-auto" ]
-            [ Html.a [ Ha.href "/mood", Ha.class "flex items-center justify-center w2 h2 pa1" ]
+            [ Html.button [ onClick (Route "/mood"), Ha.class "flex items-center justify-center w2 h2 pa1 bn" ]
                 [ svg [ Sa.class "w-100", fill "none", attribute "height" "32", attribute "stroke" "currentcolor", attribute "stroke-linecap" "round", attribute "stroke-linejoin" "round", attribute "stroke-width" "2", Sa.viewBox "0 0 32 32", attribute "width" "32" ]
                     [ Svg.path [ Sa.d "M16 2 L16 30 M2 16 L30 16" ] [] ]
                 ]
             ]
     else if Array.length model.emotionHistory > 2 then
         nav [ Ha.class "ml-auto" ]
-            [ Html.a [ Ha.href "/graph", Ha.class "flex items-center justify-center w2 h2 pa1" ]
+            [ Html.button [ onClick (Route "/graph"), Ha.class "flex items-center justify-center w2 h2 pa1" ]
                 [ svg [ Sa.class "w-100 bl bb bw1", fill "white", attribute "stroke" "white", attribute "stroke-width" "8", viewBox "0 0 100 100" ]
                     [ Svg.path [ d "M10 95 L20 90" ]
                         []
@@ -301,10 +305,15 @@ graphView model =
         [ Html.h2 [ Ha.class "tc" ] [ Html.text ("Here are your results, " ++ model.name ++ "!") ]
         , Html.div [ Ha.class "relative h5 bl bb bw2 b--mid-gray overflow-x-scroll" ]
             [ svg
-                [ Sa.class "absolute h-100", viewBox ("0 0 "
-                ++ (Array.length model.emotionHistory
-                    |> toString)
-                ++ " 11"), Sa.strokeWidth "0.15"
+                [ Sa.class "absolute h-100"
+                , viewBox
+                    ("0 0 "
+                        ++ (Array.length model.emotionHistory
+                                |> toString
+                           )
+                        ++ " 11"
+                    )
+                , Sa.strokeWidth "0.15"
                 ]
                 (plotGraph "mood" model.emotionHistory
                     ++ plotGraph "energy" model.emotionHistory
@@ -362,12 +371,14 @@ graphPoint index y array toPlot =
                     ("M"
                         ++ toString (index - 1)
                         ++ " "
-                        ++ stringNumMinusNum (Array.get (index - 1) array
-                            |> getPoint
-                            |> dataType
-                           ) 11
+                        ++ stringNumMinusNum
+                            (Array.get (index - 1) array
+                                |> getPoint
+                                |> dataType
+                            )
+                            11
                         ++ " L"
-                        ++ (toString index)
+                        ++ toString index
                         ++ " "
                         ++ stringNumMinusNum y 11
                     )
@@ -389,8 +400,9 @@ getPoint point =
 
 stringNumMinusNum : String -> Int -> String
 stringNumMinusNum stringNum num =
-    num - (String.toInt stringNum |> Result.withDefault 0)
-      |> toString
+    num
+        - (String.toInt stringNum |> Result.withDefault 0)
+        |> toString
 
 
 port setStorage : Model -> Cmd msg
